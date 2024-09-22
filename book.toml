@@ -1,0 +1,12 @@
+[book]
+authors = ["Rashed"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Everywhere Docs (in progress)"
+
+[preprocessor.toc]
+command = "mdbook-toc"
+renderer = ["html"]
+
+

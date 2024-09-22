@@ -1,0 +1,12 @@
+# Summary
+
+- [Everywhere Project](./everywhere-project-documentation.md)
+- [User Management]()
+  - [User Registration](./user-registration.md)
+  - [User Authentication](./user-authentication.md)
+  - [User Model](./user.md)
+  - [User Profile](./userprofile.md)
+- [Villa Management]()
+  - [Villa Creation and Editing](./villa-creation-and-editing.md)
+  - [Villa Approval Process](./villa-approval-process.md)
+  - [Villa Model](./villa.md)
