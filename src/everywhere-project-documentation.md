@@ -65,7 +65,8 @@ Everywhere is a comprehensive villa booking platform that connects villa owners 
 - Backend: Django with Django REST Framework
 - Database: PostgreSQL (inferred from the use of JSONField and ArrayField)
 - Authentication: Token-based authentication (likely using Django REST Framework's token auth)
-- File Storage: Likely using Django's FileField, possibly with cloud storage integration (todo)
+- File Storage: Likely using Django's FileField, possibly with cloud storage integration (todo)  
+
 
 ## 2. User Management
 
@@ -103,4 +104,27 @@ Everywhere is a comprehensive villa booking platform that connects villa owners 
 
 - Search Criteria
 - Filter Options
-- API Endpoints
+- API Endpoints  
+
+
+### 3.5 Villa Calendar View
+
+[Villa Calendar View](villa-calendar-view.md)
+
+## 4. Booking System
+
+### 4.1 Booking Model
+
+[Booking](booking.md)
+
+### 4.2 Booking Process
+
+[Booking Process](booking-process.md)
+
+### 4.3 Pricing Calculation
+
+[Price Calculation System](price-calculation-system.md)
+
+### 4.4 Booking Management
+
+[Booking Management System](booking-management-system.md)
