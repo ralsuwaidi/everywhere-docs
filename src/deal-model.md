@@ -1,134 +1,147 @@
-# Deal Model
+# Deal Model   
+Deal Model Documentation   
+## Overview   
+The Deal model represents promotional offers or discounts that can be applied to villa bookings in the Everywhere system. It allows for flexible deal configurations, including percentage-based and flat-rate discounts, time-based applicability, and day-specific applications.   
+## Fields   
+1. **name** (CharField)   
+    - Max length: 255 characters   
+    - Unique: True   
+    - Description: The name of the deal   
+2. **villa** (ForeignKey)   
+    - Related model: Villa   
+    - On delete: CASCADE   
+    - Related name: 'deals'   
+    - Description: The villa to which this deal is associated   
+3. **deal\_type** (CharField)   
+    - Max length: 10 characters   
+    - Choices:   
+        - PERCENTAGE: "Percentage"   
+        - FLAT: "Flat Rate"   
+    - Default: "FLAT"   
+    - Description: Specifies whether the deal is a percentage discount or a flat rate discount   
+4. **discount\_value** (DecimalField)   
+    - Max digits: 10   
+    - Decimal places: 2   
+    - Description: The value of the discount. For percentage deals, this represents a percentage (e.g., 15.00 for 15%). For flat rate deals, this represents a currency amount.   
+5. **display\_start\_date** (DateField)   
+    - Description: The date from which the deal becomes visible to users   
+6. **display\_end\_date** (DateField)   
+    - Description: The date until which the deal remains visible to users   
+7. **usage\_start\_date** (DateField)   
+    - Description: The date from which the deal can be applied to bookings   
+8. **usage\_end\_date** (DateField)   
+    - Description: The last date on which the deal can be applied to bookings   
+9. **max\_nights\_of\_deal** (PositiveIntegerField)   
+    - Description: The maximum number of nights to which the deal can be applied in a single booking   
+10. **min\_nights** (PositiveIntegerField)   
+    - Description: The minimum number of nights required in a booking for the deal to be applicable   
+11. **applicable\_days** (ArrayField)   
+    - Base field: BooleanField   
+    - Size: 7   
+    - Description: An array of 7 boolean values representing which days of the week the deal is applicable. Index 0 corresponds to Monday, and index 6 to Sunday.   
+   
+## Methods   
+### str(self)   
+Returns a string representation of the Deal object.   
+```
+def __str__(self):
+    return f"{self.name} for {self.villa.name}"
 
-Deal Model Documentation
+```
+## Relationships   
+1. **Many-to-One with Villa**   
+    - Each deal is associated with one villa   
+    - A villa can have multiple deals (accessible via `villa.deals.all()`)   
+2. **Many-to-Many with Booking**    
+    - A deal can be applied to multiple bookings   
+    - A booking can have multiple deals applied   
+   
+## Usage in the System   
+1. **Deal Creation**: Used in the DealViewSet to create new deals for villas.   
+2. **Price Calculation**: Referenced in the BookingService to apply discounts during booking price calculations.   
+3. **Deal Listing**: Used in the DealViewSet to list and filter deals based on various criteria.   
+   
+## Validation   
+The Deal model employs several validation mechanisms, primarily implemented in the DealSerializer and DealService. Here are the specific validations used in the system:   
+### DealSerializer Validations   
+1. **Discount Value Validation**   
+    ```
+def validate_discount_value(self, value):
+    deal_type = self.initial_data.get("deal_type")
+    if value <= 0:
+        raise serializers.ValidationError("Discount value must be greater than zero.")
+    if deal_type == "PERCENTAGE" and value > 100:
+        raise serializers.ValidationError("Percentage discount value cannot exceed 100%.")
+    return value
 
-## 1. Deal Model
+```
+    - Ensures the discount value is positive for all deal types.   
+    - For percentage deals, ensures the discount value does not exceed 100%.   
+2. **Overall Data Validation**   
+    ```
+def validate(self, data):
+    DealService.validate_deal_creation(data)
+    return data
 
-### 1.1 Fields
+```
+    - Delegates to the DealService for additional validations.   
+   
+### DealService Validations   
+The `validate\_deal\_creation` method in DealService performs several checks:   
+1. **Date Range Validation**   
+    ```
+@staticmethod
+def validate_date_range(start_date, end_date, date_type):
+    if start_date >= end_date:
+        raise ValidationError(f"{date_type} start date must be before {date_type.lower()} end date.")
 
-1. `name` (CharField)
-   - Description: The name of the deal
-   - Max Length: 255 characters
-   - Unique: True
-2. `villa` (ForeignKey to Villa)
-   - Description: The villa this deal is associated with
-   - Related Name: "deals"
-3. `deal_type` (CharField)
-   - Description: The type of deal (percentage discount or flat rate)
-   - Max Length: 10 characters
-   - Choices:
-     - PERCENTAGE: "PERCENTAGE"
-     - FLAT: "FLAT"
-   - Default: "FLAT"
-4. `discount_value` (DecimalField)
-   - Description: The value of the discount
-   - Max Digits: 10
-   - Decimal Places: 2
-   - Help Text: Represents a percentage for 'Percentage' deals and a flat rate amount for 'Flat Rate' deals
-5. `display_start_date` (DateField)
-   - Description: The date when the deal can be viewed by users
-6. `display_end_date` (DateField)
-   - Description: The date when the deal stops being viewed
-7. `usage_start_date` (DateField)
-   - Description: The date from which the deal can be used
-8. `usage_end_date` (DateField)
-   - Description: The final date when the deal can be used
-9. `max_nights_of_deal` (PositiveIntegerField)
-   - Description: The maximum number of nights the deal can apply
-10. `min_nights` (PositiveIntegerField)
-    - Description: The minimum number of nights to qualify for the deal
-11. `applicable_days` (ArrayField of BooleanField)
-    - Description: Array of booleans representing if the deal applies from Monday to Sunday
-    - Size: 7 (one boolean for each day of the week)
-    - Default: All True
+```
+    - Ensures that the start date is before the end date for both display and usage date ranges.   
+2. **Usage Against Display Validation**   
+    ```
+@staticmethod
+def validate_usage_against_display(display_start, display_end, usage_start, usage_end):
+    if usage_start < display_start or usage_end > display_end:
+        raise ValidationError("Usage dates must be within display dates.")
 
-### 1.2 Methods
+```
+    - Verifies that the usage date range is within the display date range.   
+3. **Applicable Days Validation**   
+    ```
+if not any(deal_data.get("applicable_days", [])):
+    raise ValidationError("At least one day must be selected for the deal to be applicable.")
 
-1. `__str__(self)`
-   - Description: String representation of the Deal object
-   - Returns: A string containing the deal name and associated villa name
+```
+    - Ensures that at least one day is selected in the `applicable\_days` field.   
+   
+### Overlapping Deals Check   
+In the DealViewSet, there's an additional check for overlapping deals:   
+```
+if DealService.check_for_overlapping_deals(
+    villa,
+    serializer.validated_data["usage_start_date"],
+    serializer.validated_data["usage_end_date"]
+):
+    raise ValidationError("An overlapping deal exists for the specified dates.")
 
-## 2. Deal Service
+```
+This prevents the creation of deals that overlap with existing deals for the same villa.   
+## Additional Validation Notes   
+- The system ensures that only villa owners or admin users can create deals for a villa.   
+- The unique constraint on the `name` field (defined in the model) ensures that each deal has a unique name across the entire system.   
+- Date validations ensure logical consistency between display and usage dates, preventing scenarios where a deal could be used outside its display period.   
+- The overlapping deals check prevents conflicts in deal applications and ensures clear pricing for users.   
+   
+## Indexing (todo)   
+Indexes to improve query performance:   
+```
+class Meta:
+    indexes = [
+        models.Index(fields=['villa', 'usage_start_date', 'usage_end_date']),
+        models.Index(fields=['deal_type']),
+    ]
 
-The `DealService` class provides several methods for managing deals:
-
-### 2.1 Methods
-
-1. `validate_deal_creation(deal_data: dict)`
-   - Description: Validates the data for creating a new deal
-   - Checks:
-     - Date range validity for display and usage dates
-     - Usage dates against display dates
-     - At least one day is selected for deal applicability
-2. `get_villa_details_with_deals(villa_slug, user)`
-   - Description: Fetches villa details including filtered deals based on the user
-   - Returns: Villa object and related deals
-3. `check_for_overlapping_deals(villa, start_date, end_date)`
-   - Description: Checks for any overlapping deals within the given date ranges for a specific villa
-   - Returns: Boolean indicating if overlapping deals exist
-4. `get_filtered_deals(user, villa_slug=None)`
-   - Description: Fetches and returns a queryset of deals filtered based on the given user and optional villa slug
-   - Filtering logic:
-     - For staff users: all deals
-     - For villa owners: all deals of their villas
-     - For other users: only active deals based on current date and display dates
-5. `is_deal_applicable(booking, deal: Deal) -> bool`
-   - Description: Checks if the deal's applicable days and duration match the booking date range
-   - Returns: Boolean indicating if the deal is applicable to the booking
-
-## 3. Deal Serializer
-
-The `DealSerializer` class handles the serialization and deserialization of Deal objects:
-
-### 3.1 Fields
-
-- All fields from the Deal model are included
-- `villa` is set as a read-only field  
-
-
-### 3.2 Validations
-
-1. `validate_discount_value(value)`
-   - Ensures the discount value is greater than zero
-   - For percentage deals, ensures the value does not exceed 100%
-2. `validate_display_start_date(value)`
-   - Ensures the display start date is in the future
-3. `validate_usage_start_date(value)`
-   - Ensures the usage start date is in the future
-4. `validate(data)`
-   - Calls `DealService.validate_deal_creation(data)` for comprehensive validation
-
-## 4. Deal ViewSet
-
-The `DealViewSet` class handles API operations for deals:
-
-### 4.1 Permissions
-
-- Uses `IsAuthenticated` and `IsOwnerOrAdmin` permissions  
-
-
-### 4.2 Methods
-
-1. `get_queryset()`
-   - Filters deals based on the villa_slug if provided
-   - Uses `DealService.get_filtered_deals()` for filtering
-2. `perform_create(serializer)`
-   - Ensures the user has permission to create deals for the villa
-   - Checks for overlapping deals before saving
-
-## 5. API Endpoints
-
-1. `GET /api/villas/{villa_slug}/deals/`: List deals for a specific villa
-2. `POST /api/villas/{villa_slug}/deals/`: Create a new deal for a villa
-3. `GET /api/villas/{villa_slug}/deals/{id}/`: Retrieve a specific deal
-4. `PUT /api/villas/{villa_slug}/deals/{id}/`: Update a deal
-5. `DELETE /api/villas/{villa_slug}/deals/{id}/`: Delete a deal
-
-Note: Access to these endpoints is controlled by permissions, ensuring only villa owners and staff can manage deals.
-
-## 6. Integration with Booking System
-
-- Deals are applied in the `BookingService.calculate_price()` method
-- The booking system ensures that deals and coupons are not applied simultaneously
-- Deals are stored in the `BookingTransaction` for historical record-keeping  
-  [User API Reference](user-api-reference.md)
+```
+## Notes   
+- The separation of display dates and usage dates allows for marketing deals in advance of their actual applicability.   
+- The `applicable\_days` field provides flexibility in creating deals that apply only on specific days of the week (e.g., weekday discounts, weekend specials).   

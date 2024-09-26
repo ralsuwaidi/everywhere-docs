@@ -2,17 +2,17 @@
 
 ## Base URL
 
-`/api/villas/{villa_slug}/reviews/`
+`/api/villas/{villa\_slug}/reviews/`
 
 ## Endpoints
 
 ### 1. List Reviews for a Villa
 
-**Endpoint:** GET `/api/villas/{villa_slug}/reviews/`  
+**Endpoint:** GET `/api/villas/{villa\_slug}/reviews/`  
 **Description:** Retrieves a list of all reviews for a specific villa.  
 **Parameters:**
 
-- `villa_slug` (path parameter): The slug of the villa to get reviews for.  
+- `villa\_slug` (path parameter): The slug of the villa to get reviews for.  
 
 
 **Response:**
@@ -36,11 +36,11 @@
 
 ### 2. Create a Review
 
-**Endpoint:** POST `/api/villas/{villa_slug}/reviews/`  
+**Endpoint:** POST `/api/villas/{villa\_slug}/reviews/`  
 **Description:** Creates a new review for a specific villa.  
 **Parameters:**
 
-- `villa_slug` (path parameter): The slug of the villa to review.  
+- `villa\_slug` (path parameter): The slug of the villa to review.  
 
 
 **Request Body:**
@@ -76,12 +76,12 @@
 
 ### 3. Retrieve a Specific Review
 
-**Endpoint:** GET `/api/villas/{villa_slug}/reviews/{review_id}/`  
+**Endpoint:** GET `/api/villas/{villa\_slug}/reviews/{review\_id}/`  
 **Description:** Retrieves details of a specific review.  
 **Parameters:**
 
-- `villa_slug` (path parameter): The slug of the villa.
-- `review_id` (path parameter): The ID of the review to retrieve.  
+- `villa\_slug` (path parameter): The slug of the villa.
+- `review\_id` (path parameter): The ID of the review to retrieve.  
 
 
 **Response:**
@@ -102,12 +102,12 @@
 
 ### 4. Update a Review
 
-**Endpoint:** PUT/PATCH `/api/villas/{villa_slug}/reviews/{review_id}/`  
+**Endpoint:** PUT/PATCH `/api/villas/{villa\_slug}/reviews/{review\_id}/`  
 **Description:** Updates an existing review.  
 **Parameters:**
 
-- `villa_slug` (path parameter): The slug of the villa.
-- `review_id` (path parameter): The ID of the review to update.  
+- `villa\_slug` (path parameter): The slug of the villa.
+- `review\_id` (path parameter): The ID of the review to update.  
 
 
 **Request Body:**
@@ -139,12 +139,12 @@
 
 ### 5. Delete a Review
 
-**Endpoint:** DELETE `/api/villas/{villa_slug}/reviews/{review_id}/`  
+**Endpoint:** DELETE `/api/villas/{villa\_slug}/reviews/{review\_id}/`  
 **Description:** Deletes a specific review.  
 **Parameters:**
 
-- `villa_slug` (path parameter): The slug of the villa.
-- `review_id` (path parameter): The ID of the review to delete.  
+- `villa\_slug` (path parameter): The slug of the villa.
+- `review\_id` (path parameter): The ID of the review to delete.  
 
 
 **Response:** 204 No Content  
@@ -153,7 +153,7 @@
 
 ### 6. Get User's Reviews
 
-**Endpoint:** GET `/api/villas/{villa_slug}/reviews/my_reviews/`  
+**Endpoint:** GET `/api/villas/{villa\_slug}/reviews/my\_reviews/`  
 **Description:** Retrieves all reviews written by the authenticated user.  
 **Response:**
 
