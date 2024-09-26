@@ -3,7 +3,7 @@ authors = ["Rashed"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Everywhere Docs (in progress)"
+title = "(draft)"
 
 [preprocessor.toc]
 command = "mdbook-toc"
