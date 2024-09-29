@@ -1,49 +1,60 @@
-# Targeted Night Deal Process   
-Targeted Night Deal System Documentation   
-Targeted Night Deals are a specialized type of promotional offer in the Everywhere system that apply discounts to specific nights of a guest's stay. Unlike regular deals or coupons, which typically apply to the entire booking, Targeted Night Deals focus on particular nights within a reservation, allowing for more nuanced and strategic discounting.   
-Key differences from regular deals and coupons:   
-1. **Night-specific application**: Targeted Night Deals apply to a specific night (e.g., the 3rd night) rather than the entire stay.   
-2. **Encourages longer stays**: By offering discounts on specific nights, these deals can incentivize guests to extend their bookings.   
-3. **Flexible targeting**: Villa owners can create promotions like "3rd night free" or "50% off the 5th night" to suit their business strategies.   
-   
-The Targeted Night Deal creation process allows villa owners or admin users to create these special promotional offers for villas within the Everywhere system. It uses a custom serializer, service, and view to handle the creation process, ensuring proper validation and association with villas.   
-### Business Rules for Targeted Night Deals   
-1. Only authenticated users (villa owners or admin users) can create targeted night deals.   
-2. Targeted night deals must be associated with a specific villa.   
-3. The deal creator must be the owner of the villa or an admin user.   
-4. Deal names must be unique within the system.   
-5. Discount values must be positive.   
-6. For percentage-based deals, the discount value cannot exceed `100%`.   
-7. Display and usage date ranges must be valid and logically consistent.   
-8. The usage date range must fall within the display date range.   
-9. The `target\_night` must be a positive integer.   
-10. No overlapping targeted night deals are allowed for the same villa, date range, and `target\_night`.   
-11. The system must validate all deal parameters before creation.   
-12. Deals can be of two types: percentage-based or flat-rate discounts.   
-   
-### Process   
-1. The client sends a POST request to the targeted night deal creation endpoint with the required deal data.   
-2. The system validates the input data, including checking for overlapping deals.   
-3. If valid, a new targeted night deal is created and associated with the specified villa.   
-4. The system returns the created deal data.   
-   
-### API Endpoint   
-- URL: `/api/villas/{villa\_slug}/targeted-night-deals/`   
-- Method: `POST`   
-- Authentication: Required (`IsAuthenticated` and `IsOwnerOrAdmin` permissions)   
-   
-### Request Payload   
-The targeted night deal creation request should include the following fields:   
-- `name` (string, required): The name of the deal   
-- `deal\_type` (string, required): The type of deal (`"PERCENTAGE"` or `"FLAT"`)   
-- `discount\_value` (decimal, required): The value of the discount   
-- `display\_start\_date` (date, required): The start date for displaying the deal   
-- `display\_end\_date` (date, required): The end date for displaying the deal   
-- `usage\_start\_date` (date, required): The start date for using the deal   
-- `usage\_end\_date` (date, required): The end date for using the deal   
-- `target\_night` (integer, required): The specific night of the stay to which the discount applies   
-   
-Example request body:   
+# Targeted Night Deal Process
+
+Targeted Night Deal System Documentation  
+Targeted Night Deals are a specialized type of promotional offer in the Everywhere system that apply discounts to specific nights of a guest's stay. Unlike regular deals or coupons, which typically apply to the entire booking, Targeted Night Deals focus on particular nights within a reservation, allowing for more nuanced and strategic discounting.  
+Key differences from regular deals and coupons:
+
+1. **Night-specific application**: Targeted Night Deals apply to a specific night (e.g., the 3rd night) rather than the entire stay.
+2. **Encourages longer stays**: By offering discounts on specific nights, these deals can incentivize guests to extend their bookings.
+3. **Flexible targeting**: Villa owners can create promotions like "3rd night free" or "50% off the 5th night" to suit their business strategies.
+
+The Targeted Night Deal creation process allows villa owners or admin users to create these special promotional offers for villas within the Everywhere system. It uses a custom serializer, service, and view to handle the creation process, ensuring proper validation and association with villas.
+
+### Business Rules for Targeted Night Deals
+
+1. Only authenticated users (villa owners or admin users) can create targeted night deals.
+2. Targeted night deals must be associated with a specific villa.
+3. The deal creator must be the owner of the villa or an admin user.
+4. Deal names must be unique within the system.
+5. Discount values must be positive.
+6. For percentage-based deals, the discount value cannot exceed `100%`.
+7. Display and usage date ranges must be valid and logically consistent.
+8. The usage date range must fall within the display date range.
+9. The `target_night` must be a positive integer.
+10. No overlapping targeted night deals are allowed for the same villa, date range, and `target_night`.
+11. The system must validate all deal parameters before creation.
+12. Deals can be of two types: percentage-based or flat-rate discounts.
+
+### Process
+
+1. The client sends a POST request to the targeted night deal creation endpoint with the required deal data.
+2. The system validates the input data, including checking for overlapping deals.
+3. If valid, a new targeted night deal is created and associated with the specified villa.
+4. The system returns the created deal data.
+
+### API Endpoint
+
+- URL: `/api/villas/{villa_slug}/targeted-night-deals/`
+- Method: `POST`
+- Authentication: Required (`IsAuthenticated` and `IsOwnerOrAdmin` permissions)  
+
+
+### Request Payload
+
+The targeted night deal creation request should include the following fields:
+
+- `name` (string, required): The name of the deal
+- `deal_type` (string, required): The type of deal (`"PERCENTAGE"` or `"FLAT"`)
+- `discount_value` (decimal, required): The value of the discount
+- `display_start_date` (date, required): The start date for displaying the deal
+- `display_end_date` (date, required): The end date for displaying the deal
+- `usage_start_date` (date, required): The start date for using the deal
+- `usage_end_date` (date, required): The end date for using the deal
+- `target_night` (integer, required): The specific night of the stay to which the discount applies  
+
+
+Example request body:
+
 ```
 {
     "name": "Third Night Free",
@@ -57,12 +68,17 @@ Example request body:
 }
 
 ```
-### Response   
-### Success Response   
-- Code: `201 CREATED`   
-- Content: JSON object containing the created targeted night deal's data   
-   
-Example response:   
+
+### Response
+
+### Success Response
+
+- Code: `201 CREATED`
+- Content: JSON object containing the created targeted night deal's data  
+
+
+Example response:
+
 ```
 {
     "id": 1,
@@ -78,11 +94,15 @@ Example response:
 }
 
 ```
-### Error Response   
-- Code: `400 BAD REQUEST`   
-- Content: JSON object containing error details   
-   
-Example error response:   
+
+### Error Response
+
+- Code: `400 BAD REQUEST`
+- Content: JSON object containing error details  
+
+
+Example error response:
+
 ```
 {
     "discount_value": [
@@ -94,9 +114,13 @@ Example error response:
 }
 
 ```
-### Implementation Details   
-### Serializer   
-The targeted night deal creation process uses the `TargetedNightDealSerializer`:   
+
+### Implementation Details
+
+### Serializer
+
+The targeted night deal creation process uses the `TargetedNightDealSerializer`:
+
 ```
 class TargetedNightDealSerializer(serializers.ModelSerializer):
     class Meta:
@@ -126,14 +150,19 @@ class TargetedNightDealSerializer(serializers.ModelSerializer):
         return data
 
 ```
-This serializer:   
-- Ensures all required fields are provided   
-- Validates the `discount\_value` based on the `deal\_type`   
-- Validates the `target\_night` value   
-- Uses the `TargetedNightDealService` for additional validation   
-   
-### Service   
-The `TargetedNightDealService` handles business logic and additional validation:   
+
+This serializer:
+
+- Ensures all required fields are provided
+- Validates the `discount_value` based on the `deal_type`
+- Validates the `target_night` value
+- Uses the `TargetedNightDealService` for additional validation  
+
+
+### Service
+
+The `TargetedNightDealService` handles business logic and additional validation:
+
 ```
 class TargetedNightDealService:
     @staticmethod
@@ -165,8 +194,11 @@ class TargetedNightDealService:
         ).exists()
 
 ```
-### View   
-The targeted night deal creation is handled by the `create` method in the `TargetedNightDealViewSet`:   
+
+### View
+
+The targeted night deal creation is handled by the `create` method in the `TargetedNightDealViewSet`:
+
 ```
 class TargetedNightDealViewSet(viewsets.ModelViewSet):
     serializer_class = TargetedNightDealSerializer
@@ -187,23 +219,29 @@ class TargetedNightDealViewSet(viewsets.ModelViewSet):
         serializer.save(villa=villa)
 
 ```
-This view:   
-- Ensures the user has permission to create targeted night deals for the villa   
-- Checks for overlapping deals before creation   
-- Associates the deal with the correct villa   
-   
-### Validation   
-- Deal `name` must be unique   
-- `discount\_value` must be positive and, for percentage deals, not exceed `100%`   
-- Display and usage date ranges must be valid and logically consistent   
-- `target\_night` must be a positive integer   
-- No overlapping targeted night deals are allowed for the same villa, date range, and `target\_night`   
-- The user creating the deal must be the villa owner or an admin   
-   
-### Notes   
-- Targeted night deals are automatically associated with the villa specified in the URL   
-- The system prevents creation of overlapping targeted night deals for the same villa, date range, and `target\_night`   
-- Consider implementing a maximum limit on the number of active targeted night deals per villa   
-- Future enhancement: Allow for combinable targeted night deals or more complex multi-night discounts   
-- The `target\_night` field allows for specific promotions like "third night free" or "50% off the fifth night"   
-- These deals can be particularly effective for encouraging longer stays   
+
+This view:
+
+- Ensures the user has permission to create targeted night deals for the villa
+- Checks for overlapping deals before creation
+- Associates the deal with the correct villa  
+
+
+### Validation
+
+- Deal `name` must be unique
+- `discount_value` must be positive and, for percentage deals, not exceed `100%`
+- Display and usage date ranges must be valid and logically consistent
+- `target_night` must be a positive integer
+- No overlapping targeted night deals are allowed for the same villa, date range, and `target_night`
+- The user creating the deal must be the villa owner or an admin  
+
+
+### Notes
+
+- Targeted night deals are automatically associated with the villa specified in the URL
+- The system prevents creation of overlapping targeted night deals for the same villa, date range, and `target_night`
+- Consider implementing a maximum limit on the number of active targeted night deals per villa
+- Future enhancement: Allow for combinable targeted night deals or more complex multi-night discounts
+- The `target_night` field allows for specific promotions like "third night free" or "50% off the fifth night"
+- These deals can be particularly effective for encouraging longer stays

@@ -1,52 +1,62 @@
-# Coupon Creation Process   
-Coupon System Documentation   
-The coupon creation process allows villa owners or admin users to create promotional codes for villas in the Everywhere system. It uses a custom serializer, service, and view to handle the creation process, ensuring proper validation and association with villas.   
-### Business Rules for Coupons   
-1. Only authenticated users (villa owners or admin users) can create coupons.   
-2. Coupons must be associated with a specific villa.   
-3. The coupon creator must be the owner of the villa or an admin user.   
-4. Coupon names (codes) must be unique within the system.   
-5. Discount values must be positive.   
-6. For percentage-based coupons, the discount value cannot exceed 100%.   
-7. Apply and usage date ranges must be valid and logically consistent.   
-8. The usage date range must fall within the apply date range.   
-9. At least one day of the week must be selected for the coupon to be applicable.   
-10. No overlapping coupons are allowed for the same villa and date range.   
-11. Coupons must have a specified maximum number of users.   
-12. Coupons must have specified minimum and maximum days for eligibility.   
-13. The system must validate all coupon parameters before creation.   
-14. Coupons can be of two types: percentage-based or flat-rate discounts.   
-15. Coupons can be targeted to specific users or be available to all users.   
-16. Coupons can be set for first-time bookings only.   
-   
-### Process   
-1. The client sends a POST request to the coupon creation endpoint with the required coupon data.   
-2. The system validates the input data, including checking for overlapping coupons.   
-3. If valid, a new coupon is created and associated with the specified villa.   
-4. The system returns the created coupon data.   
-   
-### API Endpoint   
-- URL: `/api/villas/{villa\_slug}/coupons/`   
-- Method: POST   
-- Authentication: Required (IsAuthenticated and IsOwnerOrAdmin permissions)   
-   
-### Request Payload   
-The coupon creation request should include the following fields:   
-- `name` (string, required): The name or code of the coupon   
-- `apply\_start\_date` (date, required): The start date for applying the coupon   
-- `apply\_end\_date` (date, required): The end date for applying the coupon   
-- `usage\_start\_date` (date, required): The start date for using the coupon   
-- `usage\_end\_date` (date, required): The end date for using the coupon   
-- `max\_users` (integer, required): Maximum number of users who can use the coupon   
-- `discount\_type` (string, required): The type of discount ("PERCENTAGE" or "FLAT")   
-- `discount\_value` (decimal, required): The value of the discount   
-- `min\_days` (integer, required): Minimum number of days required for the coupon   
-- `max\_days` (integer, required): Maximum number of days the coupon applies to   
-- `first\_time\_booking\_only` (boolean, optional): Whether the coupon is for first-time bookings only   
-- `applicable\_days` (array of boolean, required): 7 boolean values indicating applicability for each day of the week   
-- `targeted\_users` (array of integers, optional): User IDs for targeted users   
-   
-Example request body:   
+# Coupon Creation Process
+
+Coupon System Documentation  
+The coupon creation process allows villa owners or admin users to create promotional codes for villas in the Everywhere system. It uses a custom serializer, service, and view to handle the creation process, ensuring proper validation and association with villas.
+
+### Business Rules for Coupons
+
+1. Only authenticated users (villa owners or admin users) can create coupons.
+2. Coupons must be associated with a specific villa.
+3. The coupon creator must be the owner of the villa or an admin user.
+4. Coupon names (codes) must be unique within the system.
+5. Discount values must be positive.
+6. For percentage-based coupons, the discount value cannot exceed 100%.
+7. Apply and usage date ranges must be valid and logically consistent.
+8. The usage date range must fall within the apply date range.
+9. At least one day of the week must be selected for the coupon to be applicable.
+10. No overlapping coupons are allowed for the same villa and date range.
+11. Coupons must have a specified maximum number of users.
+12. Coupons must have specified minimum and maximum days for eligibility.
+13. The system must validate all coupon parameters before creation.
+14. Coupons can be of two types: percentage-based or flat-rate discounts.
+15. Coupons can be targeted to specific users or be available to all users.
+16. Coupons can be set for first-time bookings only.
+
+### Process
+
+1. The client sends a POST request to the coupon creation endpoint with the required coupon data.
+2. The system validates the input data, including checking for overlapping coupons.
+3. If valid, a new coupon is created and associated with the specified villa.
+4. The system returns the created coupon data.
+
+### API Endpoint
+
+- URL: `/api/villas/{villa_slug}/coupons/`
+- Method: POST
+- Authentication: Required (IsAuthenticated and IsOwnerOrAdmin permissions)  
+
+
+### Request Payload
+
+The coupon creation request should include the following fields:
+
+- `name` (string, required): The name or code of the coupon
+- `apply_start_date` (date, required): The start date for applying the coupon
+- `apply_end_date` (date, required): The end date for applying the coupon
+- `usage_start_date` (date, required): The start date for using the coupon
+- `usage_end_date` (date, required): The end date for using the coupon
+- `max_users` (integer, required): Maximum number of users who can use the coupon
+- `discount_type` (string, required): The type of discount ("PERCENTAGE" or "FLAT")
+- `discount_value` (decimal, required): The value of the discount
+- `min_days` (integer, required): Minimum number of days required for the coupon
+- `max_days` (integer, required): Maximum number of days the coupon applies to
+- `first_time_booking_only` (boolean, optional): Whether the coupon is for first-time bookings only
+- `applicable_days` (array of boolean, required): 7 boolean values indicating applicability for each day of the week
+- `targeted_users` (array of integers, optional): User IDs for targeted users  
+
+
+Example request body:
+
 ```
 {
     "name": "SUMMER2024",
@@ -65,12 +75,17 @@ Example request body:
 }
 
 ```
-### Response   
-### Success Response   
-- Code: `201` CREATED   
-- Content: JSON object containing the created coupon's data   
-   
-Example response:   
+
+### Response
+
+### Success Response
+
+- Code: `201` CREATED
+- Content: JSON object containing the created coupon's data  
+
+
+Example response:
+
 ```
 {
     "id": 1,
@@ -91,11 +106,15 @@ Example response:
 }
 
 ```
-### Error Response   
-- Code: `400` BAD REQUEST   
-- Content: JSON object containing error details   
-   
-Example error response:   
+
+### Error Response
+
+- Code: `400` BAD REQUEST
+- Content: JSON object containing error details  
+
+
+Example error response:
+
 ```
 {
     "discount_value": [
@@ -107,9 +126,13 @@ Example error response:
 }
 
 ```
-### Implementation Details   
-### Serializer   
-The coupon creation process uses the CouponSerializer:   
+
+### Implementation Details
+
+### Serializer
+
+The coupon creation process uses the CouponSerializer:
+
 ```
 class CouponSerializer(serializers.ModelSerializer):
     class Meta:
@@ -135,13 +158,18 @@ class CouponSerializer(serializers.ModelSerializer):
         return data
 
 ```
-This serializer:   
-- Ensures all required fields are provided   
-- Validates the discount value based on the discount type   
-- Uses the CouponService for additional validation   
-   
-### Service   
-The CouponService handles business logic and additional validation:   
+
+This serializer:
+
+- Ensures all required fields are provided
+- Validates the discount value based on the discount type
+- Uses the CouponService for additional validation  
+
+
+### Service
+
+The CouponService handles business logic and additional validation:
+
 ```
 class CouponService:
     @staticmethod
@@ -164,15 +192,18 @@ class CouponService:
         )
         if not any(coupon_data.get("applicable_days", [])):
             raise ValidationError("At least one day must be selected for the coupon to be applicable.")
-        
+
         CouponService.validate_max_users(
             coupon_data.get("max_users"),
             coupon_data.get("targeted_users", [])
         )
 
 ```
-### View   
-The coupon creation is handled by the create method in the CouponViewSet:   
+
+### View
+
+The coupon creation is handled by the create method in the CouponViewSet:
+
 ```
 class CouponViewSet(viewsets.ModelViewSet):
     serializer_class = CouponSerializer
@@ -192,24 +223,30 @@ class CouponViewSet(viewsets.ModelViewSet):
         serializer.save(villa=villa)
 
 ```
-This view:   
-- Ensures the user has permission to create coupons for the villa   
-- Checks for overlapping coupons before creation   
-- Associates the coupon with the correct villa   
-   
-### Validation   
-- Coupon name must be unique   
-- Discount value must be positive and, for percentage coupons, not exceed 100%   
-- Apply and usage date ranges must be valid and logically consistent   
-- At least one day must be selected in applicable\_days   
-- No overlapping coupons are allowed for the same villa and date range   
-- The user creating the coupon must be the villa owner or an admin   
-- The number of targeted users cannot exceed the maximum number of users   
-   
-### Notes   
-- Coupons are automatically associated with the villa specified in the URL   
-- The system prevents creation of overlapping coupons for the same villa   
-- Consider implementing a maximum limit on the number of active coupons per villa   
-- Future enhancement: Allow for combinable coupons or tiered discounts   
-- The first\_time\_booking\_only flag allows for special promotions for new customers   
-- Targeted users feature enables creation of user-specific promotions   
+
+This view:
+
+- Ensures the user has permission to create coupons for the villa
+- Checks for overlapping coupons before creation
+- Associates the coupon with the correct villa  
+
+
+### Validation
+
+- Coupon name must be unique
+- Discount value must be positive and, for percentage coupons, not exceed 100%
+- Apply and usage date ranges must be valid and logically consistent
+- At least one day must be selected in applicable_days
+- No overlapping coupons are allowed for the same villa and date range
+- The user creating the coupon must be the villa owner or an admin
+- The number of targeted users cannot exceed the maximum number of users  
+
+
+### Notes
+
+- Coupons are automatically associated with the villa specified in the URL
+- The system prevents creation of overlapping coupons for the same villa
+- Consider implementing a maximum limit on the number of active coupons per villa
+- Future enhancement: Allow for combinable coupons or tiered discounts
+- The first_time_booking_only flag allows for special promotions for new customers
+- Targeted users feature enables creation of user-specific promotions

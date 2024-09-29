@@ -19,21 +19,21 @@ Review Model Documentation
    - Description: The rating given by the user
    - Validators: MinValueValidator(0), MaxValueValidator(10)
    - Help Text: "Rating from 0 to 10"
-5. `created\_at` (DateTimeField)
+5. `created_at` (DateTimeField)
    - Description: The date and time when the review was created
    - Auto Now Add: True
-6. `updated\_at` (DateTimeField)
+6. `updated_at` (DateTimeField)
    - Description: The date and time when the review was last updated
    - Auto Now: True
 
 ### 1.2 Meta
 
-- `unique\_together`: ("villa", "user")
+- `unique_together`: ("villa", "user")
   - This ensures that a user can only write one review per villa
 
 ### 1.3 Methods
 
-1. `\_\_str\_\_(self)`
+1. `__str__(self)`
    - Description: String representation of the Review object
    - Returns: A string in the format "Review by {username} for {villa_name}"
 
@@ -43,19 +43,19 @@ The `ReviewService` class provides several methods to manage reviews:
 
 ### 2.1 Methods
 
-1. `can\_review\_villa(user, villa)`
+1. `can_review_villa(user, villa)`
    - Description: Checks if a user is eligible to review a villa
    - Validation:
      - Checks if the villa is approved for reviews
      - Verifies that the user has a past, paid booking for the villa
      - Ensures the user hasn't already reviewed this villa
-2. `create\_or\_update\_review(user, villa, review\_data)`
+2. `create_or_update_review(user, villa, review_data)`
    - Description: Creates a new review or updates an existing one
    - Returns: The review object and a boolean indicating if it was created or updated
-3. `get\_villa\_reviews(villa)`
+3. `get_villa_reviews(villa)`
    - Description: Retrieves all reviews for a specific villa
    - Returns: QuerySet of Review objects
-4. `get\_user\_reviews(user)`
+4. `get_user_reviews(user)`
    - Description: Retrieves all reviews written by a specific user
    - Returns: QuerySet of Review objects
 
@@ -67,14 +67,14 @@ The `ReviewSerializer` is responsible for serializing and deserializing Review o
 
 - All fields from the Review model, except:
   - `user` is read-only and uses StringRelatedField
-  - `id`, `created\_at`, `updated\_at`, `user`, and `villa` are read-only
+  - `id`, `created_at`, `updated_at`, `user`, and `villa` are read-only
 
 ### 3.2 Methods
 
-1. `create(self, validated\_data)`
+1. `create(self, validated_data)`
    - Description: Creates a new review
    - Uses the current user and villa from the context
-2. `update(self, instance, validated\_data)`
+2. `update(self, instance, validated_data)`
    - Description: Updates an existing review
    - Only updates `text` and `rating` fields
 
@@ -85,12 +85,11 @@ The `ReviewViewSet` handles API requests related to reviews:
 ### 4.1 Permissions
 
 - List and Retrieve: AllowAny
-- Create, Update, Delete: IsAuthenticated  
-
+- Create, Update, Delete: IsAuthenticated
 
 ### 4.2 Methods
 
-1. `get\_queryset(self)`
+1. `get_queryset(self)`
    - Description: Returns reviews for a specific villa
 2. `create(self, request, \*args, \*\*kwargs)`
    - Description: Creates a new review
@@ -99,20 +98,20 @@ The `ReviewViewSet` handles API requests related to reviews:
 3. `update(self, request, \*args, \*\*kwargs)`
    - Description: Updates an existing review
    - Checks if the user can review the villa
-4. `my\_reviews(self, request)`
+4. `my_reviews(self, request)`
    - Description: Returns all reviews written by the current user
-5. `villa\_reviews(self, request)`
+5. `villa_reviews(self, request)`
    - Description: Returns all reviews for a specific villa
 
 ## 5. API Endpoints
 
-1. `GET /api/villas/{villa\_slug}/reviews/`: List all reviews for a specific villa
-2. `POST /api/villas/{villa\_slug}/reviews/`: Create a new review for a villa
-3. `GET /api/villas/{villa\_slug}/reviews/{id}/`: Retrieve a specific review
-4. `PUT /api/villas/{villa\_slug}/reviews/{id}/`: Update a specific review
-5. `DELETE /api/villas/{villa\_slug}/reviews/{id}/`: Delete a specific review
-6. `GET /api/villas/{villa\_slug}/reviews/my\_reviews/`: List all reviews by the current user
-7. `GET /api/villas/{villa\_slug}/reviews/villa\_reviews/`: List all reviews for the current villa
+1. `GET /api/villas/{villa_slug}/reviews/`: List all reviews for a specific villa
+2. `POST /api/villas/{villa_slug}/reviews/`: Create a new review for a villa
+3. `GET /api/villas/{villa_slug}/reviews/{id}/`: Retrieve a specific review
+4. `PUT /api/villas/{villa_slug}/reviews/{id}/`: Update a specific review
+5. `DELETE /api/villas/{villa_slug}/reviews/{id}/`: Delete a specific review
+6. `GET /api/villas/{villa_slug}/reviews/my_reviews/`: List all reviews by the current user
+7. `GET /api/villas/{villa_slug}/reviews/villa_reviews/`: List all reviews for the current villa
 
 ## 6. Business Rules
 
