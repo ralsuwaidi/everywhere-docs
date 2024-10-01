@@ -29,3 +29,6 @@
 - [Targeted Night Deal]()
   - [Targeted Night Deal Model](./targetednightdeal.md)
   - [Targeted Night Deal Process](./targeted-night-deal-process.md)
+- [API Documentation]()
+  - [User API](./user-api-documentation.md)
+  - [Villa API](./villa-api-reference.md)
