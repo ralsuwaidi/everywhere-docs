@@ -1,13 +1,23 @@
-# Villa API Reference   
-# Villa API   
-## 1. Create Villa   
-### Description   
-Create a new villa listing in the system.   
-### Endpoint   
-`POST /api/villas/`   
-### Authentication   
-Token required (Villa Owner or Admin)   
-### Request Body   
+# Villa API Reference
+
+# Villa API
+
+## 1. Create Villa
+
+### Description
+
+Create a new villa listing in the system.
+
+### Endpoint
+
+`POST /api/villas/`
+
+### Authentication
+
+Token required (Villa Owner or Admin)
+
+### Request Body
+
 ```
 {
   "name": "Seaside Escape",
@@ -46,29 +56,33 @@ Token required (Villa Owner or Admin)
 }
 
 ```
-|                    Field |    Type | Required |                                         Description |
-|:-------------------------|:--------|:---------|:----------------------------------------------------|
-|                     name |  string |      Yes |                                   Name of the villa |
-|              description |  string |      Yes |                   Detailed description of the villa |
-|             villa\_email |  string |      Yes |                         Contact email for the villa |
-|     villa\_phone\_number |  string |      Yes |                  Contact phone number for the villa |
-|          check\_in\_time |    time |      Yes |                               Default check-in time |
-|         check\_out\_time |    time |      Yes |                              Default check-out time |
-|     cancellation\_policy |  string |       No |                         Cancellation policy details |
-|              regulations |  string |       No |                         House rules and regulations |
-|    owner\_has\_insurance | boolean |      Yes |                     Whether the owner has insurance |
-|        insurance\_amount | decimal |       No |                      Insurance amount if applicable |
-|       max\_adult\_guests | integer |      Yes |              Maximum number of adult guests allowed |
-|       max\_child\_guests | integer |      Yes |              Maximum number of child guests allowed |
-|           area\_sq\_feet | decimal |       No |              Total area of the villa in square feet |
-| booking\_advance\_notice | integer |      Yes | Minimum days of advance notice required for booking |
-|              guest\_type |  string |      Yes |  Type of guests allowed (AL for All, FA for Family) |
-|                    rooms |   array |      Yes |                 Array of room objects for the villa |
 
-### Response   
-### Success Response   
-**Code:** 201 CREATED   
-**Content example:**   
+| Field                  | Type    | Required | Description                                         |
+| :--------------------- | :------ | :------- | :-------------------------------------------------- |
+| name                   | string  | Yes      | Name of the villa                                   |
+| description            | string  | Yes      | Detailed description of the villa                   |
+| villa_email            | string  | Yes      | Contact email for the villa                         |
+| villa_phone_number     | string  | Yes      | Contact phone number for the villa                  |
+| check_in_time          | time    | Yes      | Default check-in time                               |
+| check_out_time         | time    | Yes      | Default check-out time                              |
+| cancellation_policy    | string  | No       | Cancellation policy details                         |
+| regulations            | string  | No       | House rules and regulations                         |
+| owner_has_insurance    | boolean | Yes      | Whether the owner has insurance                     |
+| insurance_amount       | decimal | No       | Insurance amount if applicable                      |
+| max_adult_guests       | integer | Yes      | Maximum number of adult guests allowed              |
+| max_child_guests       | integer | Yes      | Maximum number of child guests allowed              |
+| area_sq_feet           | decimal | No       | Total area of the villa in square feet              |
+| booking_advance_notice | integer | Yes      | Minimum days of advance notice required for booking |
+| guest_type             | string  | Yes      | Type of guests allowed (AL for All, FA for Family)  |
+| rooms                  | array   | Yes      | Array of room objects for the villa                 |
+
+### Response
+
+### Success Response
+
+**Code:** 201 CREATED  
+**Content example:**
+
 ```
 {
   "id": 1,
@@ -112,9 +126,12 @@ Token required (Villa Owner or Admin)
 }
 
 ```
-### Error Response   
-**Code:** 400 BAD REQUEST   
-**Content:**   
+
+### Error Response
+
+**Code:** 400 BAD REQUEST  
+**Content:**
+
 ```
 {
   "name": ["A villa with this name already exists."],
@@ -122,12 +139,16 @@ Token required (Villa Owner or Admin)
 }
 
 ```
-### Notes   
-- The villa is initially created with a "draft" review status.   
-- The `slug` field is automatically generated from the villa name.   
-- At least one room must be provided when creating a villa.   
-   
-### Example Usage   
+
+### Notes
+
+- The villa is initially created with a "draft" review status.
+- The `slug` field is automatically generated from the villa name.
+- At least one room must be provided when creating a villa.  
+
+
+### Example Usage
+
 ```
 curl -X POST \
   http://localhost:8000/api/villas/ \
@@ -170,22 +191,34 @@ curl -X POST \
   }'
 
 ```
-## 2. Get Villa Details   
-### Description   
-Retrieve detailed information about a specific villa.   
-### Endpoint   
-`GET /api/villas/{slug}/`   
-### Authentication   
-No authentication required for approved villas. Owner or Admin authentication required for draft villas.   
-### Path Parameters   
-| Parameter |   Type | Required |                  Description |
-|:----------|:-------|:---------|:-----------------------------|
-|      slug | string |      Yes | The unique slug of the villa |
 
-### Response   
-### Success Response   
-**Code:** 200 OK   
-**Content example:**   
+## 2. Get Villa Details
+
+### Description
+
+Retrieve detailed information about a specific villa.
+
+### Endpoint
+
+`GET /api/villas/{slug}/`
+
+### Authentication
+
+No authentication required for approved villas. Owner or Admin authentication required for draft villas.
+
+### Path Parameters
+
+| Parameter | Type   | Required | Description                  |
+| :-------- | :----- | :------- | :--------------------------- |
+| slug      | string | Yes      | The unique slug of the villa |
+
+### Response
+
+### Success Response
+
+**Code:** 200 OK  
+**Content example:**
+
 ```
 {
   "id": 1,
@@ -237,39 +270,50 @@ No authentication required for approved villas. Owner or Admin authentication re
 }
 
 ```
-### Error Response   
-**Code:** 404 NOT FOUND   
-**Content:**   
+
+### Error Response
+
+**Code:** 404 NOT FOUND  
+**Content:**
+
 ```
 {
   "detail": "Not found."
 }
 
 ```
-### Notes   
-- The `villa\_email` field is only visible to staff users.   
-- Amenities and images are included in the response if available.   
-   
-### Example Usage   
+
+### Notes
+
+- The `villa_email` field is only visible to staff users.
+- Amenities and images are included in the response if available.  
+
+
+### Example Usage
+
 ```
 curl -X GET http://localhost:8000/api/villas/seaside-escape/
 
 ```
-##    
-## 3. Update Villa   
-**Description**   
-Update the details of an existing villa. This endpoint allows partial updates to villa information.   
-**Endpoint**   
-`PATCH /api/villas/{slug}/`   
-**Authentication**   
-Token required (Villa Owner or Admin)   
-**Path Parameters**   
-| Parameter |   Type | Required |                            Description |
-|:----------|:-------|:---------|:---------------------------------------|
-|      slug | string |      Yes | The unique slug of the villa to update |
 
-**Request Body**   
-All fields are optional. Only include the fields you want to update.   
+##
+
+## 3. Update Villa
+
+**Description**  
+Update the details of an existing villa. This endpoint allows partial updates to villa information.  
+**Endpoint**  
+`PATCH /api/villas/{slug}/`  
+**Authentication**  
+Token required (Villa Owner or Admin)  
+**Path Parameters**  
+| Parameter | Type | Required | Description |
+|:----------|:-------|:---------|:---------------------------------------|
+| slug | string | Yes | The unique slug of the villa to update |
+
+**Request Body**  
+All fields are optional. Only include the fields you want to update.
+
 ```
 {
   "name": "Updated Seaside Villa",
@@ -283,10 +327,12 @@ All fields are optional. Only include the fields you want to update.
 }
 
 ```
-**Response**   
-*Success Response*   
-**Code:** 200 OK   
-**Content example:**   
+
+**Response**  
+_Success Response_  
+**Code:** 200 OK  
+**Content example:**
+
 ```
 {
   "id": 1,
@@ -324,9 +370,11 @@ All fields are optional. Only include the fields you want to update.
 }
 
 ```
-*Error Response*   
-**Code:** 400 BAD REQUEST   
-**Content:**   
+
+_Error Response_  
+**Code:** 400 BAD REQUEST  
+**Content:**
+
 ```
 {
   "max_adult_guests": ["Ensure this value is less than or equal to 10."],
@@ -334,12 +382,16 @@ All fields are optional. Only include the fields you want to update.
 }
 
 ```
-**Notes**   
-- Only the villa owner or an admin can update the villa details.   
-- The review status may change to "pending review" if certain fields are updated.   
-- Fields not included in the PATCH request will remain unchanged.   
-   
-**Example Usage**   
+
+**Notes**
+
+- Only the villa owner or an admin can update the villa details.
+- The review status may change to "pending review" if certain fields are updated.
+- Fields not included in the PATCH request will remain unchanged.  
+
+
+**Example Usage**
+
 ```
 curl -X PATCH \
   -H "Authorization: Token YOUR_ACCESS_TOKEN" \
@@ -352,49 +404,70 @@ curl -X PATCH \
   https://api.example.com/api/villas/seaside-escape/
 
 ```
-This example updates the description and guest capacity of the villa.   
-## 4. Check Villa Availability   
-### Description   
-Check the availability of a villa for a specific date range.   
-### Endpoint   
-`GET /api/villas/{slug}/check\_availability/`   
-### Authentication   
-No authentication required.   
-### Path Parameters   
-| Parameter |   Type | Required |                  Description |
-|:----------|:-------|:---------|:-----------------------------|
-|      slug | string |      Yes | The unique slug of the villa |
 
-### Query Parameters   
-|   Parameter | Type | Required |                                         Description |
-|:------------|:-----|:---------|:----------------------------------------------------|
-| start\_date | date |      Yes | Start date of the desired stay (format: YYYY-MM-DD) |
-|   end\_date | date |      Yes |   End date of the desired stay (format: YYYY-MM-DD) |
+This example updates the description and guest capacity of the villa.
 
-### Response   
-### Success Response   
-**Code:** 200 OK   
-**Content example:**   
+## 4. Check Villa Availability
+
+### Description
+
+Check the availability of a villa for a specific date range.
+
+### Endpoint
+
+`GET /api/villas/{slug}/check_availability/`
+
+### Authentication
+
+No authentication required.
+
+### Path Parameters
+
+| Parameter | Type   | Required | Description                  |
+| :-------- | :----- | :------- | :--------------------------- |
+| slug      | string | Yes      | The unique slug of the villa |
+
+### Query Parameters
+
+| Parameter  | Type | Required | Description                                         |
+| :--------- | :--- | :------- | :-------------------------------------------------- |
+| start_date | date | Yes      | Start date of the desired stay (format: YYYY-MM-DD) |
+| end_date   | date | Yes      | End date of the desired stay (format: YYYY-MM-DD)   |
+
+### Response
+
+### Success Response
+
+**Code:** 200 OK  
+**Content example:**
+
 ```
 {
   "available": true
 }
 
 ```
-### Error Response   
-**Code:** 400 BAD REQUEST   
-**Content:**   
+
+### Error Response
+
+**Code:** 400 BAD REQUEST  
+**Content:**
+
 ```
 {
   "error": "Invalid date format. Please use YYYY-MM-DD."
 }
 
 ```
-### Notes   
-- This endpoint checks if the villa is available for the entire specified date range.   
-- It takes into account existing bookings and any blocked dates set by the owner.   
-   
-### Example Usage   
+
+### Notes
+
+- This endpoint checks if the villa is available for the entire specified date range.
+- It takes into account existing bookings and any blocked dates set by the owner.  
+
+
+### Example Usage
+
 ```
 curl -X GET "https://api.example.com/api/villas/seaside-escape/check_availability/?start_date=2024-07-01&end_date=2024-07-07"
 
